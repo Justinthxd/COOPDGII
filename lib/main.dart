@@ -1,12 +1,17 @@
+import 'package:final_app/pages/acerca_de.dart';
+import 'package:final_app/pages/noticias.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 
 import 'pages/cuenta.dart';
+import 'pages/descuentos.dart';
 import 'pages/home.dart';
 import 'pages/investments.dart';
 import 'pages/login.dart';
 import 'pages/prestamos.dart';
+import 'pages/solicitudes.dart';
+import 'pages/sub_descuentos.dart';
 import 'provider/provider.dart';
 
 void main() => runApp(
@@ -40,6 +45,10 @@ class MyApp extends StatelessWidget {
         '/Cuentas': (context) => Cuenta(),
         '/Inversiones': (context) => Inversiones(),
         '/Prestamos': (context) => Prestamos(),
+        '/Solicitudes': (context) => Solicitudes(),
+        '/Noticias': (context) => Noticias(),
+        '/Descuentos': (context) => Descuentos(),
+        '/Acerca de': (context) => AcercaDe(),
       },
     );
   }

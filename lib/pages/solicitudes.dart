@@ -2,20 +2,20 @@ import 'package:final_app/resource/drawer.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:syncfusion_flutter_charts/charts.dart';
-import 'package:syncfusion_flutter_charts/sparkcharts.dart';
 
 import '../data/api.dart';
 import '../provider/provider.dart';
+import 'cuenta.dart';
 
-class Prestamos extends StatefulWidget {
-  Prestamos({Key? key}) : super(key: key);
+class Solicitudes extends StatefulWidget {
+  Solicitudes({Key? key}) : super(key: key);
 
   @override
-  State<Prestamos> createState() => _PrestamosState();
+  State<Solicitudes> createState() => _SolicitudesState();
 }
 
-class _PrestamosState extends State<Prestamos> {
-  final _scaffoldKey = GlobalKey<ScaffoldState>();
+class _SolicitudesState extends State<Solicitudes> {
+  final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
 
   API api = API();
 
@@ -40,25 +40,48 @@ class _PrestamosState extends State<Prestamos> {
           ),
         ),
       ),
-      body: Stack(
-        children: [
-          Container(
-            height: size.height,
-            width: size.width,
-            color: main.getIsDark
-                ? const Color.fromRGBO(20, 20, 20, 1)
-                : const Color.fromRGBO(245, 245, 245, 1),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
+      body: Container(
+        height: size.height,
+        width: size.width,
+        color: main.getIsDark
+            ? const Color.fromRGBO(20, 20, 20, 1)
+            : const Color.fromRGBO(240, 240, 240, 1),
+        child: Stack(
+          children: [
+            Column(
               children: [
-                SizedBox(height: size.height * 0.08),
-                Expanded(
+                const SizedBox(height: 20),
+                Row(
+                  children: [
+                    SizedBox(width: size.width * 0.05),
+                    IconButton(
+                      icon: Icon(
+                        Icons.menu,
+                        color: main.getIsDark ? Colors.white : Colors.black54,
+                        size: 30,
+                      ),
+                      onPressed: () {
+                        _scaffoldKey.currentState?.openDrawer();
+                      },
+                    ),
+                    const SizedBox(width: 10),
+                    Text(
+                      "Solicitudes",
+                      style: TextStyle(
+                        color: main.getIsDark ? Colors.white : Colors.black54,
+                        fontSize: 24,
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                  ],
+                ),
+                SizedBox(height: size.height * 0.019),
+                SizedBox(
+                  height: size.height - 102,
                   child: FutureBuilder(
-                    future: api.prestamos(main.getToken),
+                    future: api.solicitudes(main.getToken),
                     builder: (BuildContext context, AsyncSnapshot snapshot) {
                       if (snapshot.hasData) {
-                        print(snapshot.data[1]);
-
                         return ListView.separated(
                           itemCount: snapshot.data.length,
                           separatorBuilder: (context, index) => Container(
@@ -106,13 +129,11 @@ class _PrestamosState extends State<Prestamos> {
                                 children: [
                                   Container(
                                     height: size.height * 0.1,
-                                    width: 5,
+                                    width: 6,
                                     decoration: BoxDecoration(
                                       color: main.getIsDark
-                                          ? const Color.fromARGB(
-                                              255, 156, 129, 39)
-                                          : const Color.fromARGB(
-                                              255, 238, 189, 30),
+                                          ? Colors.green.withOpacity(0.5)
+                                          : Colors.green.withOpacity(0.8),
                                       borderRadius: BorderRadius.circular(8),
                                       boxShadow: [
                                         BoxShadow(
@@ -126,36 +147,38 @@ class _PrestamosState extends State<Prestamos> {
                                       ],
                                     ),
                                   ),
-                                  const SizedBox(width: 10),
+                                  SizedBox(width: 10),
                                   Column(
                                     crossAxisAlignment:
                                         CrossAxisAlignment.start,
                                     children: [
-                                      Row(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.spaceBetween,
-                                        children: [
-                                          Text(
-                                            snapshot.data[index]['descripcion'],
-                                            style: TextStyle(
-                                              color: main.getIsDark
-                                                  ? Colors.white
-                                                  : Colors.black,
-                                              fontSize: 20,
-                                              fontWeight: FontWeight.w600,
-                                            ),
-                                          ),
-                                        ],
-                                      ),
-                                      const SizedBox(height: 5),
                                       Text(
-                                        snapshot.data[index]['fecha_prestamo'],
+                                        snapshot.data[index]['nombre']
+                                            .toString(),
+                                        overflow: TextOverflow.ellipsis,
+                                        style: TextStyle(
+                                          color: main.getIsDark
+                                              ? Colors.white
+                                              : Colors.black,
+                                          fontSize: (snapshot.data[index]
+                                                      ['nombre'] !=
+                                                  null)
+                                              ? (snapshot.data[index]['nombre']
+                                                          .length >
+                                                      33)
+                                                  ? 15
+                                                  : 20
+                                              : 20,
+                                          fontWeight: FontWeight.bold,
+                                        ),
+                                      ),
+                                      Text(
+                                        snapshot.data[index]['codigo'],
                                         style: TextStyle(
                                           color: main.getIsDark
                                               ? Colors.white38
-                                              : Colors.black45,
+                                              : Colors.black,
                                           fontSize: 18,
-                                          fontWeight: FontWeight.w500,
                                         ),
                                       ),
                                       const SizedBox(height: 15),
@@ -164,18 +187,16 @@ class _PrestamosState extends State<Prestamos> {
                                             MainAxisAlignment.spaceBetween,
                                         children: [
                                           Text(
-                                            "Monto: \$" +
-                                                snapshot.data[index]
-                                                    ['monto_prestamo'],
+                                            "Estado: " +
+                                                snapshot.data[index]['estado'],
                                             style: TextStyle(
                                               color: main.getIsDark
                                                   ? Colors.white
                                                   : Colors.black,
-                                              fontSize: 19,
-                                              fontWeight: FontWeight.w700,
+                                              fontWeight: FontWeight.w500,
+                                              fontSize: 20,
                                             ),
                                           ),
-                                          SizedBox(width: size.width * 0.1),
                                         ],
                                       ),
                                     ],
@@ -193,38 +214,19 @@ class _PrestamosState extends State<Prestamos> {
                     },
                   ),
                 ),
+                SizedBox(height: size.height * 0.019),
               ],
             ),
-          ),
-          Positioned(
-            left: 18,
-            top: 18,
-            child: Row(
-              children: [
-                IconButton(
-                  icon: Icon(
-                    Icons.menu,
-                    color: main.getIsDark ? Colors.white : Colors.black54,
-                    size: 30,
-                  ),
-                  onPressed: () {
-                    _scaffoldKey.currentState?.openDrawer();
-                  },
-                ),
-                const SizedBox(width: 10),
-                Text(
-                  "Prestamos",
-                  style: TextStyle(
-                    color: main.getIsDark ? Colors.white : Colors.black54,
-                    fontSize: 24,
-                    fontWeight: FontWeight.w600,
-                  ),
-                ),
-              ],
-            ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }
+}
+
+class Data {
+  Data(this.year, this.monto);
+
+  final String year;
+  final double monto;
 }

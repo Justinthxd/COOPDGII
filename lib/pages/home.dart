@@ -20,7 +20,7 @@ class _HomeState extends State<Home> {
   List<IconData> icons = [
     Icons.account_balance_wallet_rounded,
     Icons.attach_money_rounded,
-    Icons.trending_up_rounded,
+    Icons.work_rounded,
     Icons.newspaper_rounded,
     Icons.discount_rounded,
     Icons.info_outline_rounded,
@@ -29,7 +29,7 @@ class _HomeState extends State<Home> {
   List<String> names = [
     'Cuentas',
     'Prestamos',
-    'Inversiones',
+    'Solicitudes',
     'Noticias',
     'Descuentos',
     'Acerca de',
@@ -41,7 +41,7 @@ class _HomeState extends State<Home> {
     final main = Provider.of<MainProvider>(context);
     return Scaffold(
       key: _scaffoldKey,
-      drawer: MainDrawer(main: main),
+      drawer: MainDrawer(),
       body: Container(
         height: size.height,
         width: size.width,
@@ -78,17 +78,16 @@ class _HomeState extends State<Home> {
                     children: [
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: const [
+                        children: [
                           Text(
-                            "Justin Inoa",
-                            // main.getUserName,
-                            style: TextStyle(
+                            main.getName,
+                            style: const TextStyle(
                               color: Colors.white,
                               fontSize: 32,
                               fontWeight: FontWeight.w600,
                             ),
                           ),
-                          Text(
+                          const Text(
                             "06/09/2020",
                             style: TextStyle(
                               color: Colors.white54,
@@ -138,7 +137,7 @@ class _HomeState extends State<Home> {
                             ),
                           ),
                           Text(
-                            "\$1,700.00",
+                            "\$20,068.75",
                             // main.getUserName,
                             style: TextStyle(
                               color: Colors.white.withOpacity(0.9),

@@ -3,6 +3,7 @@ import 'package:final_app/provider/provider.dart';
 import 'package:final_app/resource/drawer.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 import '../data/api.dart';
 
@@ -18,8 +19,8 @@ class _LoginState extends State<Login> {
 
   API api = API();
 
-  TextEditingController _userController = TextEditingController();
-  TextEditingController _passwordController = TextEditingController();
+  final TextEditingController _userController = TextEditingController();
+  final TextEditingController _passwordController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -27,7 +28,7 @@ class _LoginState extends State<Login> {
     final main = Provider.of<MainProvider>(context);
     return Scaffold(
       key: _scaffoldKey,
-      drawer: MainDrawer(main: main),
+      drawer: MainDrawer(),
       body: SizedBox(
         height: size.height,
         width: size.width,
@@ -37,8 +38,8 @@ class _LoginState extends State<Login> {
               height: size.height,
               width: size.width,
               color: main.getIsDark
-                  ? Color.fromRGBO(20, 20, 20, 1)
-                  : Color.fromRGBO(245, 245, 245, 1),
+                  ? const Color.fromRGBO(20, 20, 20, 1)
+                  : const Color.fromRGBO(245, 245, 245, 1),
               child: SingleChildScrollView(
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
@@ -60,23 +61,23 @@ class _LoginState extends State<Login> {
                       ),
                       decoration: BoxDecoration(
                         color: main.getIsDark
-                            ? Color.fromRGBO(20, 20, 20, 1)
+                            ? const Color.fromRGBO(20, 20, 20, 1)
                             : const Color.fromRGBO(245, 245, 245, 1),
                         borderRadius: BorderRadius.circular(9),
                         boxShadow: [
                           BoxShadow(
                             blurRadius: 5.0,
                             color: main.getIsDark
-                                ? Color.fromRGBO(30, 30, 30, 1)
-                                : Color.fromRGBO(255, 255, 255, 1),
-                            offset: Offset(-3.0, -3.0),
+                                ? const Color.fromRGBO(30, 30, 30, 1)
+                                : const Color.fromRGBO(255, 255, 255, 1),
+                            offset: const Offset(-3.0, -3.0),
                           ),
                           BoxShadow(
                             blurRadius: 5.0,
                             color: main.getIsDark
-                                ? Color.fromRGBO(10, 10, 10, 1)
-                                : Color.fromRGBO(235, 235, 235, 1),
-                            offset: Offset(3.0, 3.0),
+                                ? const Color.fromRGBO(10, 10, 10, 1)
+                                : const Color.fromRGBO(235, 235, 235, 1),
+                            offset: const Offset(3.0, 3.0),
                           ),
                         ],
                       ),
@@ -114,23 +115,23 @@ class _LoginState extends State<Login> {
                       ),
                       decoration: BoxDecoration(
                         color: main.getIsDark
-                            ? Color.fromRGBO(20, 20, 20, 1)
-                            : Color.fromRGBO(245, 245, 245, 1),
+                            ? const Color.fromRGBO(20, 20, 20, 1)
+                            : const Color.fromRGBO(245, 245, 245, 1),
                         borderRadius: BorderRadius.circular(9),
                         boxShadow: [
                           BoxShadow(
                             blurRadius: 5.0,
                             color: main.getIsDark
-                                ? Color.fromRGBO(30, 30, 30, 1)
-                                : Color.fromRGBO(255, 255, 255, 1),
-                            offset: Offset(-3.0, -3.0),
+                                ? const Color.fromRGBO(30, 30, 30, 1)
+                                : const Color.fromRGBO(255, 255, 255, 1),
+                            offset: const Offset(-3.0, -3.0),
                           ),
                           BoxShadow(
                             blurRadius: 5.0,
                             color: main.getIsDark
-                                ? Color.fromRGBO(10, 10, 10, 1)
-                                : Color.fromRGBO(235, 235, 235, 1),
-                            offset: Offset(3.0, 3.0),
+                                ? const Color.fromRGBO(10, 10, 10, 1)
+                                : const Color.fromRGBO(235, 235, 235, 1),
+                            offset: const Offset(3.0, 3.0),
                           ),
                         ],
                       ),
@@ -185,7 +186,13 @@ class _LoginState extends State<Login> {
                           )
                               .then((value) {
                             if (value['success']) {
-                              api.descuentos(value['data']['token']);
+                              _userController.clear();
+                              _passwordController.clear();
+                              // - - - - - - - - //
+                              main.setIsLogged = true;
+                              main.setName = value['data']['nombre'];
+                              main.setEmail = value['data']['email'];
+                              // - - - - - - - - //
                               main.setToken(value['data']['token']);
                               Navigator.push(
                                 context,
@@ -209,11 +216,19 @@ class _LoginState extends State<Login> {
                       ),
                     ),
                     const SizedBox(height: 30),
-                    Text(
-                      "Forgot password?",
-                      style: TextStyle(
-                        fontSize: 18,
-                        color: Colors.lightBlue.withOpacity(0.8),
+                    GestureDetector(
+                      onTap: () {
+                        launchUrl(
+                          Uri.parse(
+                              'https://coopdgii.com/coopvirtual/login/reset'),
+                        );
+                      },
+                      child: Text(
+                        "Forgot password?",
+                        style: TextStyle(
+                          fontSize: 18,
+                          color: Colors.lightBlue.withOpacity(0.8),
+                        ),
                       ),
                     ),
                     const SizedBox(height: 30),
@@ -233,7 +248,12 @@ class _LoginState extends State<Login> {
                             fontSize: 18,
                           ),
                         ),
-                        onPressed: () {},
+                        onPressed: () {
+                          launchUrl(
+                            Uri.parse(
+                                'https://coopdgii.com/coopvirtual/login/edit'),
+                          );
+                        },
                       ),
                     ),
                   ],

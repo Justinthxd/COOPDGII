@@ -103,7 +103,7 @@ class _InversionesState extends State<Inversiones> {
     final main = Provider.of<MainProvider>(context);
     return Scaffold(
       key: _scaffoldKey,
-      drawer: MainDrawer(main: main),
+      drawer: MainDrawer(),
       body: Container(
         height: size.height,
         width: size.width,
@@ -146,7 +146,7 @@ class _InversionesState extends State<Inversiones> {
                     tooltipBehavior: TooltipBehavior(enable: true),
                     plotAreaBackgroundColor: main.getIsDark
                         ? const Color.fromRGBO(20, 20, 20, 1)
-                        : Color.fromARGB(255, 41, 38, 71),
+                        : const Color.fromARGB(255, 41, 38, 71),
                     series: [
                       LineSeries(
                         animationDuration: 5000,
@@ -191,8 +191,8 @@ class _InversionesState extends State<Inversiones> {
                     ),
                     Expanded(
                       child: Container(
-                        margin: EdgeInsets.symmetric(horizontal: 15),
-                        child: Divider(),
+                        margin: const EdgeInsets.symmetric(horizontal: 15),
+                        child: const Divider(),
                       ),
                     ),
                   ],
@@ -248,7 +248,7 @@ class _InversionesState extends State<Inversiones> {
                                 fontWeight: FontWeight.w600,
                               ),
                             ),
-                            Spacer(),
+                            const Spacer(),
                             Text(
                               dates[i],
                               style: TextStyle(

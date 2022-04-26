@@ -7,14 +7,16 @@ import 'package:syncfusion_flutter_charts/sparkcharts.dart';
 import '../data/api.dart';
 import '../provider/provider.dart';
 
-class Prestamos extends StatefulWidget {
-  Prestamos({Key? key}) : super(key: key);
+class SubDescuentos extends StatefulWidget {
+  SubDescuentos({Key? key, required this.mes}) : super(key: key);
+
+  String mes;
 
   @override
-  State<Prestamos> createState() => _PrestamosState();
+  State<SubDescuentos> createState() => _SubDescuentosState();
 }
 
-class _PrestamosState extends State<Prestamos> {
+class _SubDescuentosState extends State<SubDescuentos> {
   final _scaffoldKey = GlobalKey<ScaffoldState>();
 
   API api = API();
@@ -54,13 +56,18 @@ class _PrestamosState extends State<Prestamos> {
                 SizedBox(height: size.height * 0.08),
                 Expanded(
                   child: FutureBuilder(
-                    future: api.prestamos(main.getToken),
+                    future: api.descuentos(main.getToken),
                     builder: (BuildContext context, AsyncSnapshot snapshot) {
                       if (snapshot.hasData) {
-                        print(snapshot.data[1]);
-
+                        int aux = 0;
+                        for (int i = 0; i < snapshot.data.length; i++) {
+                          if (snapshot.data[i]['mes_str'] == widget.mes) {
+                            aux = i;
+                          }
+                        }
+                        print(snapshot.data[aux]['det'][0]);
                         return ListView.separated(
-                          itemCount: snapshot.data.length,
+                          itemCount: snapshot.data[aux]['det'].length,
                           separatorBuilder: (context, index) => Container(
                             margin: const EdgeInsets.symmetric(horizontal: 20),
                             child: Divider(
@@ -110,16 +117,17 @@ class _PrestamosState extends State<Prestamos> {
                                     decoration: BoxDecoration(
                                       color: main.getIsDark
                                           ? const Color.fromARGB(
-                                              255, 156, 129, 39)
+                                              255, 110, 110, 141)
                                           : const Color.fromARGB(
-                                              255, 238, 189, 30),
+                                                  255, 148, 212, 74)
+                                              .withOpacity(0.5),
                                       borderRadius: BorderRadius.circular(8),
                                       boxShadow: [
                                         BoxShadow(
-                                          blurRadius: 3.0,
+                                          blurRadius: 1.0,
                                           color: main.getIsDark
-                                              ? const Color.fromRGBO(
-                                                  30, 30, 30, 1)
+                                              ? const Color.fromARGB(
+                                                  255, 47, 47, 59)
                                               : Colors.black12,
                                           offset: const Offset(0.0, 0.0),
                                         ),
@@ -136,12 +144,13 @@ class _PrestamosState extends State<Prestamos> {
                                             MainAxisAlignment.spaceBetween,
                                         children: [
                                           Text(
-                                            snapshot.data[index]['descripcion'],
+                                            snapshot.data[aux]['det'][index]
+                                                ['descripcion'],
                                             style: TextStyle(
                                               color: main.getIsDark
                                                   ? Colors.white
                                                   : Colors.black,
-                                              fontSize: 20,
+                                              fontSize: 22,
                                               fontWeight: FontWeight.w600,
                                             ),
                                           ),
@@ -149,13 +158,14 @@ class _PrestamosState extends State<Prestamos> {
                                       ),
                                       const SizedBox(height: 5),
                                       Text(
-                                        snapshot.data[index]['fecha_prestamo'],
+                                        snapshot.data[aux]['det'][index]
+                                                ['fecha_aplicacion']
+                                            .toString(),
                                         style: TextStyle(
                                           color: main.getIsDark
                                               ? Colors.white38
-                                              : Colors.black45,
+                                              : Colors.black,
                                           fontSize: 18,
-                                          fontWeight: FontWeight.w500,
                                         ),
                                       ),
                                       const SizedBox(height: 15),
@@ -165,17 +175,26 @@ class _PrestamosState extends State<Prestamos> {
                                         children: [
                                           Text(
                                             "Monto: \$" +
-                                                snapshot.data[index]
-                                                    ['monto_prestamo'],
+                                                snapshot.data[aux]['det'][index]
+                                                        ['monto']
+                                                    .toString(),
                                             style: TextStyle(
                                               color: main.getIsDark
                                                   ? Colors.white
                                                   : Colors.black,
                                               fontSize: 19,
-                                              fontWeight: FontWeight.w700,
                                             ),
                                           ),
-                                          SizedBox(width: size.width * 0.1),
+                                          Text(
+                                            snapshot.data[aux]['det'][index]
+                                                ['ano'],
+                                            style: TextStyle(
+                                              color: main.getIsDark
+                                                  ? Colors.white
+                                                  : Colors.black,
+                                              fontSize: 19,
+                                            ),
+                                          ),
                                         ],
                                       ),
                                     ],
@@ -213,7 +232,7 @@ class _PrestamosState extends State<Prestamos> {
                 ),
                 const SizedBox(width: 10),
                 Text(
-                  "Prestamos",
+                  widget.mes,
                   style: TextStyle(
                     color: main.getIsDark ? Colors.white : Colors.black54,
                     fontSize: 24,
