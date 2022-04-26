@@ -51,8 +51,8 @@ class API {
     return data['data'];
   }
 
-  Future solicitudesPost(String token) async {
-    final _json = json.encode("[[nombre, -]]");
+  Future solicitudesPost(String token, String x1, x2, x3) async {
+    final _json = json.encode("[[nombre:, $x1],[Plazo:, $x2],[Monto:, $x3]]");
     final response = await http.post(
       Uri.parse(url + 'solicitudes_registro'),
       body: {'token': token, 'tipo': '1', 'datos': _json},

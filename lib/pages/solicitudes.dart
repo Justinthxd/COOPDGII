@@ -1,5 +1,6 @@
 import 'package:final_app/resource/drawer.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import 'package:syncfusion_flutter_charts/charts.dart';
 
@@ -24,6 +25,7 @@ class _SolicitudesState extends State<Solicitudes> {
     final size = MediaQuery.of(context).size;
     final main = Provider.of<MainProvider>(context);
     return Scaffold(
+      resizeToAvoidBottomInset: false,
       key: _scaffoldKey,
       drawer: MainDrawer(),
       floatingActionButton: Container(
@@ -32,7 +34,9 @@ class _SolicitudesState extends State<Solicitudes> {
           backgroundColor: main.getIsDark
               ? Colors.lightGreen.withOpacity(0.7)
               : Colors.green,
-          onPressed: () {},
+          onPressed: () {
+            solicitudDialog(context);
+          },
           child: const Icon(
             Icons.edit_rounded,
             size: 30,
@@ -82,6 +86,7 @@ class _SolicitudesState extends State<Solicitudes> {
                     future: api.solicitudes(main.getToken),
                     builder: (BuildContext context, AsyncSnapshot snapshot) {
                       if (snapshot.hasData) {
+                        api.solicitudesTipos(main.getToken);
                         return ListView.separated(
                           itemCount: snapshot.data.length,
                           separatorBuilder: (context, index) => Container(
@@ -147,7 +152,7 @@ class _SolicitudesState extends State<Solicitudes> {
                                       ],
                                     ),
                                   ),
-                                  SizedBox(width: 10),
+                                  const SizedBox(width: 10),
                                   Column(
                                     crossAxisAlignment:
                                         CrossAxisAlignment.start,
@@ -229,4 +234,319 @@ class Data {
 
   final String year;
   final double monto;
+}
+
+Future solicitudDialog(BuildContext context) async {
+  TextEditingController _usernameController = TextEditingController();
+  TextEditingController _emailController = TextEditingController();
+  TextEditingController _passwordController = TextEditingController();
+
+  return showDialog(
+    context: context,
+    builder: (BuildContext context) {
+      return AlertDialog(
+        backgroundColor: const Color.fromARGB(255, 245, 245, 245),
+        title: Row(
+          children: const [
+            Spacer(),
+            Text(
+              "Solicitud",
+              style: TextStyle(
+                fontSize: 24,
+                color: Colors.black87,
+              ),
+            ),
+            Spacer(),
+          ],
+        ),
+        content: SingleChildScrollView(
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              const Divider(),
+              const SizedBox(height: 15),
+              Column(
+                children: [
+                  const SizedBox(height: 5),
+                  Column(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    children: [
+                      ElevatedButton(
+                        style: ElevatedButton.styleFrom(
+                          primary: Colors.blueGrey.withOpacity(0.8),
+                        ),
+                        child: const Text(
+                          "Prestamos",
+                          style: TextStyle(
+                            fontSize: 15,
+                            color: Colors.white,
+                          ),
+                        ),
+                        onPressed: () {
+                          Navigator.pop(context);
+                          prestamosDialog(context);
+                        },
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 15),
+                  const Divider(),
+                  const SizedBox(height: 5),
+                  OutlinedButton(
+                    child: const Text(
+                      "Cancelar",
+                      style: TextStyle(
+                        fontSize: 15,
+                        color: Colors.black54,
+                      ),
+                    ),
+                    onPressed: () {
+                      Navigator.pop(context);
+                    },
+                  ),
+                  const SizedBox(height: 5),
+                ],
+              ),
+            ],
+          ),
+        ),
+      );
+    },
+  );
+}
+
+Future prestamosDialog(BuildContext context) async {
+  TextEditingController _usernameController = TextEditingController();
+  TextEditingController _emailController = TextEditingController();
+  TextEditingController _passwordController = TextEditingController();
+
+  return showDialog(
+    context: context,
+    builder: (BuildContext context) {
+      final main = Provider.of<MainProvider>(context);
+
+      API api = API();
+      return AlertDialog(
+        backgroundColor: const Color.fromARGB(255, 245, 245, 245),
+        title: Row(
+          children: const [
+            Spacer(),
+            Text(
+              "Prestamos",
+              style: TextStyle(
+                fontSize: 24,
+                color: Colors.black87,
+              ),
+            ),
+            Spacer(),
+          ],
+        ),
+        content: SingleChildScrollView(
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              const Divider(),
+              const SizedBox(height: 15),
+              Column(
+                children: [
+                  TextField(
+                    controller: _usernameController,
+                    cursorColor: Colors.white,
+                    textAlign: TextAlign.center,
+                    textCapitalization: TextCapitalization.sentences,
+                    inputFormatters: [
+                      LengthLimitingTextInputFormatter(12),
+                    ],
+                    decoration: InputDecoration(
+                      filled: true,
+                      hintText: "Nombre",
+                      fillColor: Color.fromARGB(255, 216, 216, 216),
+                      hintStyle: const TextStyle(
+                        fontSize: 17,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.black54,
+                      ),
+                      enabledBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(7),
+                        borderSide: const BorderSide(
+                          color: Colors.transparent,
+                        ),
+                      ),
+                      focusedBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(7),
+                        borderSide: const BorderSide(
+                          color: Colors.transparent,
+                        ),
+                      ),
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(7),
+                        borderSide: const BorderSide(
+                          color: Colors.transparent,
+                        ),
+                      ),
+                    ),
+                  ),
+                  const SizedBox(height: 15),
+                  TextField(
+                    controller: _emailController,
+                    cursorColor: Colors.white,
+                    textAlign: TextAlign.center,
+                    keyboardType: TextInputType.emailAddress,
+                    decoration: InputDecoration(
+                      filled: true,
+                      hintText: "Plazo",
+                      fillColor: Color.fromARGB(255, 216, 216, 216),
+                      hintStyle: const TextStyle(
+                        fontSize: 17,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.black54,
+                      ),
+                      enabledBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(7),
+                        borderSide: const BorderSide(
+                          color: Colors.transparent,
+                        ),
+                      ),
+                      focusedBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(7),
+                        borderSide: const BorderSide(
+                          color: Colors.transparent,
+                        ),
+                      ),
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(7),
+                        borderSide: const BorderSide(
+                          color: Colors.transparent,
+                        ),
+                      ),
+                    ),
+                  ),
+                  const SizedBox(height: 15),
+                  TextField(
+                    controller: _passwordController,
+                    cursorColor: Colors.white,
+                    textAlign: TextAlign.center,
+                    inputFormatters: [
+                      LengthLimitingTextInputFormatter(12),
+                    ],
+                    decoration: InputDecoration(
+                      filled: true,
+                      hintText: "Monto",
+                      fillColor: Color.fromARGB(255, 216, 216, 216),
+                      hintStyle: const TextStyle(
+                        fontSize: 17,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.black54,
+                      ),
+                      enabledBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(7),
+                        borderSide: const BorderSide(
+                          color: Colors.transparent,
+                        ),
+                      ),
+                      focusedBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(7),
+                        borderSide: const BorderSide(
+                          color: Colors.transparent,
+                        ),
+                      ),
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(7),
+                        borderSide: const BorderSide(
+                          color: Colors.transparent,
+                        ),
+                      ),
+                    ),
+                  ),
+                  const SizedBox(height: 15),
+                  const Divider(),
+                  const SizedBox(height: 15),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    children: [
+                      ElevatedButton(
+                        style: ElevatedButton.styleFrom(
+                          primary: Colors.blueGrey.withOpacity(0.9),
+                        ),
+                        child: const Text(
+                          "Cancel",
+                          style: TextStyle(
+                            fontSize: 15,
+                            color: Colors.white,
+                          ),
+                        ),
+                        onPressed: () {
+                          Navigator.pop(context);
+                        },
+                      ),
+                      ElevatedButton(
+                        style: ElevatedButton.styleFrom(
+                          primary: Colors.green.withOpacity(0.8),
+                        ),
+                        child: const Text(
+                          "Solicitar",
+                          style: TextStyle(
+                            fontSize: 15,
+                            color: Colors.white,
+                          ),
+                        ),
+                        onPressed: () {
+                          api.solicitudesPost(
+                            main.getToken,
+                            _usernameController.text,
+                            _emailController.text,
+                            _passwordController.text,
+                          );
+                          Navigator.of(context).pop();
+                          showDialog(
+                            context: context,
+                            builder: (BuildContext context) {
+                              return AlertDialog(
+                                content: Column(
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: [
+                                    const Text(
+                                      "Solicitud Exitosa",
+                                      style: TextStyle(
+                                        color: Colors.black54,
+                                        fontSize: 24,
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                    ),
+                                    const SizedBox(height: 15),
+                                    const Divider(),
+                                    const SizedBox(height: 15),
+                                    ElevatedButton(
+                                      style: ElevatedButton.styleFrom(
+                                        primary:
+                                            Colors.blueGrey.withOpacity(0.9),
+                                      ),
+                                      child: const Text(
+                                        "Ok",
+                                        style: TextStyle(
+                                          fontSize: 15,
+                                          color: Colors.white,
+                                        ),
+                                      ),
+                                      onPressed: () {
+                                        Navigator.pop(context);
+                                      },
+                                    ),
+                                  ],
+                                ),
+                              );
+                            },
+                          );
+                        },
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+            ],
+          ),
+        ),
+      );
+    },
+  );
 }
